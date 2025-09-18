@@ -1,4 +1,5 @@
 import discord
+import random
 from discord.ext import commands
 
 intents = discord.Intents.default()
@@ -41,5 +42,26 @@ async def multiplicar(ctx, num1:int, num2:int):
 @bot.command()
 async def dividir(ctx, num1:int, num2:int):
     await ctx.send(f"la división es: {num1 / num2}")
+
+@bot.command()
+async def roll(ctx, dice: str):
+    """Rolls a dice in NdN format."""
+    try:
+        rolls, limit = map(int, dice.split('d'))
+    except Exception:
+        await ctx.send('Format has to be in NdN!')
+        return
+
+    result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
+    await ctx.send(result)
+
+@bot.command()
+async def joined(ctx, member: discord.Member):
+    """Says when a member joined."""
+    # Joined at can be None in very bizarre cases so just handle that as well
+    if member.joined_at is None:
+        await ctx.send(f'{member} has no join date.')
+    else:
+        await ctx.send(f'{member} joined {discord.utils.format_dt(member.joined_at)}')
 
 bot.run("token")
